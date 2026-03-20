@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="tr" data-theme="birlik">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>DiziBul - Rastgele Öneriler</title>
+    <meta name="description" content="Ruh haline uygun veya tamamen rastgele harika TV serisi ve anime önerileri eden web uygulaması.">
+    <meta property="og:title" content="DiziBul - Rastgele Dizi & Anime Önerici">
+    <meta property="og:description" content="Ne izleyeceğine karar veremiyor musun? Hemen DiziBul'u kullan!">
+    <meta property="og:type" content="website">
+    <meta name="theme-color" content="#fbbf24">
+    <link rel="icon" href="icon.svg" type="image/svg+xml">
+    <link rel="manifest" href="manifest.json">
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="ambient-bg" id="ambient-bg"></div>
+    <div class="watermark bottom-left">discord.gg/birlik</div>
+    <div class="watermark bottom-right">Developed by rodinyamert</div>
+
+    <div class="top-bar">
+        <div class="top-bar-left">
+            <div class="theme-switcher">
+                <button class="theme-btn active" data-set-theme="birlik" data-i18n="theme_birlik">Birlik</button>
+                <button class="theme-btn" data-set-theme="dark" data-i18n="theme_dark">Dark</button>
+                <button class="theme-btn" data-set-theme="light" data-i18n="theme_light">Light</button>
+            </div>
+            <div class="lang-switcher">
+                <button class="lang-btn active" data-set-lang="tr">🇹🇷 TR</button>
+                <button class="lang-btn" data-set-lang="en">🇬🇧 EN</button>
+            </div>
+        </div>
+        <button id="open-watchlist-btn" class="nav-btn" data-i18n="watchlist_btn">📑 Listem</button>
+    </div>
+
+    <div class="watchlist-modal hidden" id="watchlist-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 data-i18n="watchlist_title">İzleme Listem</h2>
+                <button id="close-watchlist-btn" class="close-btn">&times;</button>
+            </div>
+            <div id="watchlist-body" class="modal-body">
+            </div>
+        </div>
+    </div>
+
+    <div class="app-container">
+        <header class="hero-section">
+            <h1 class="title">Dizi<span class="highlight">Bul</span></h1>
+            <p class="subtitle" data-i18n="subtitle">Şu an nasıl hissediyorsun? Ruh haline en uygun diziyi senin için bulalım.</p>
+        </header>
+
+        <main class="main-content">
+
+            <div class="type-selector">
+                <label class="type-option">
+                    <input type="radio" name="media-type" value="series" checked>
+                    <span data-i18n="type_series">📺 Dizi</span>
+                </label>
+                <label class="type-option">
+                    <input type="radio" name="media-type" value="anime">
+                    <span data-i18n="type_anime">🎌 Anime</span>
+                </label>
+                <label class="type-option">
+                    <input type="radio" name="media-type" value="both">
+                    <span data-i18n="type_both">🎲 Her İkisi</span>
+                </label>
+            </div>
+
+            <div class="mood-grid">
+                <button class="mood-btn" data-mood="happy">
+                    <span class="emoji">😊</span>
+                    <span class="label" data-i18n="mood_happy">Mutlu</span>
+                </button>
+                <button class="mood-btn" data-mood="sad">
+                    <span class="emoji">😢</span>
+                    <span class="label" data-i18n="mood_sad">Hüzünlü</span>
+                </button>
+                <button class="mood-btn" data-mood="angry">
+                    <span class="emoji">😠</span>
+                    <span class="label" data-i18n="mood_angry">Sinirli</span>
+                </button>
+                <button class="mood-btn" data-mood="relaxed">
+                    <span class="emoji">😌</span>
+                    <span class="label" data-i18n="mood_relaxed">Sakin / Rahat</span>
+                </button>
+                <button class="mood-btn" data-mood="romantic">
+                    <span class="emoji">❤️</span>
+                    <span class="label" data-i18n="mood_romantic">Romantik</span>
+                </button>
+                <button class="mood-btn" data-mood="adventurous">
+                    <span class="emoji">🎒</span>
+                    <span class="label" data-i18n="mood_adventurous">Maceracı</span>
+                </button>
+            </div>
+
+            <div class="random-container">
+                <button class="random-btn" id="random-btn">
+                    <span class="emoji">🎲</span>
+                    <span class="label" data-i18n="random_btn">Ya Da Tamamen Rastgele Bul!</span>
+                </button>
+            </div>
+
+            <div class="loader-container">
+                <div class="kinetic"></div>
+                <p data-i18n="loader_text">Veritabanı taranıyor...</p>
+            </div>
+
+            <div class="error-container" id="error-container">
+                <div class="error-icon">😿</div>
+                <h2 id="error-title" data-i18n="error_title">Bir Sorun Oluştu</h2>
+                <p id="error-message" data-i18n="error_desc">İnternet bağlantınızı kontrol edin veya daha sonra tekrar deneyin.</p>
+                <button class="reset-btn" id="error-back-btn" data-i18n="error_back">Geri Dön</button>
+            </div>
+
+            <div class="result-container">
+                <div class="movie-card">
+                    <div class="poster" id="movie-poster">
+                        <span id="poster-title"></span>
+                    </div>
+                    <div class="movie-info">
+                        <div class="badges">
+                            <span class="genre-badge" id="movie-genre"></span>
+                            <span class="platform-badge" id="movie-platform"></span>
+                            <span class="status-badge" id="movie-status"></span>
+                        </div>
+                        <h2 id="movie-title"></h2>
+                        <div class="meta">
+                            <span class="year" id="movie-year"></span>
+                            <span class="spacer">•</span>
+                            <span class="rating" id="movie-rating"></span>
+                            <span class="spacer">•</span>
+                            <span class="episodes" id="movie-episodes"></span>
+                        </div>
+                        <p class="description" id="movie-desc"></p>
+                        
+                        <div class="cast-section">
+                            <button class="cast-toggle-btn" id="cast-toggle-btn" data-i18n="show_cast">🎭 Oyuncuları Gör</button>
+                            <div class="cast-container hidden" id="cast-container"></div>
+                        </div>
+
+                        <div class="action-buttons">
+                            <button class="action-icon-btn like-btn" id="like-btn" title="Beğendim">👍</button>
+                            <button class="action-icon-btn dislike-btn" id="dislike-btn" title="Beğenmedim">👎</button>
+                            <a href="#" class="watch-btn" id="movie-trailer" data-trailer-url="" data-i18n="watch_trailer">Fragmanı İzle</a>
+                            <button class="watchlist-add-btn" id="toggle-watchlist-btn" data-i18n="add_watchlist">📌 Listeme Ekle</button>
+                            <button class="share-btn" id="movie-share-btn" data-i18n="share_btn">📤 Paylaş</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="footer-buttons">
+                    <button class="reset-btn" id="main-reset-btn" data-i18n="reset_btn">Başka Bul</button>
+                    <button class="reset-btn similar-btn" id="similar-btn" data-i18n="similar_btn">🔍 Benzerlerini Öner</button>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <div class="bg-elements">
+        <div class="circle circle-1"></div>
+        <div class="circle circle-2"></div>
+    </div>
+
+    <div class="trailer-modal hidden" id="trailer-modal">
+        <div class="trailer-content">
+            <button id="close-trailer-btn" class="close-btn">&times;</button>
+            <div class="iframe-container" id="iframe-wrapper"></div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

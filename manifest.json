@@ -1,0 +1,17 @@
+{
+  "name": "DiziBul - Rastgele Dizi Önerici",
+  "short_name": "DiziBul",
+  "description": "Ruh haline uygun veya tamamen rastgele harika TV serisi ve anime önerileri eden web uygulaması.",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#09090b",
+  "theme_color": "#fbbf24",
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
